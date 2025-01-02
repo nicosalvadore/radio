@@ -8,172 +8,54 @@
 /* General styles */
 body {
     font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
     background-color: #121212; /* Dark background color */
     color: #e0e0e0; /* Light text color */
 }
 
-.container {
-    width: 100%;
-    padding: 10px;
-    box-sizing: border-box;
-}
-
-.buttons {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-/* Styling for each sound button */
-.sound-btn {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100px;
-    height: 100px;
-    background-color: #1e1e1e; /* Dark button background */
-    color: #e0e0e0; /* Light text color */
-    font-size: 14px;
-    text-align: center;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-/* Hover effect for sound buttons */
-.sound-btn:hover {
-    background-color: #333333; /* Slightly lighter dark color */
-}
-
-/* Active (playing) button styling */
-.sound-btn.playing {
-    background-color: #444444; /* Different dark color for active state */
-}
-
-/* Icon styling */
-.sound-btn i {
-    font-size: 30px;
-}
-
-/* Play/Pause button styling */
-.play-pause-btn {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    z-index: 10;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-#playPauseBtn {
-    width: 40px;
-    height: 40px;
-    background-color: #1e1e1e; /* Dark button background */
-    color: #e0e0e0; /* Light text color */
-    border: none;
-    border-radius: 50%;
-    font-size: 20px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-#playPauseBtn:hover {
-    background-color: #333333; /* Slightly lighter dark color */
-    transform: scale(1.1);
-}
-
-.controls {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-#volumeSlider {
-    width: 300px; /* Increased width to 300px */
-}
-
 #streamName {
-    font-size: 20px;
-    color: #e0e0e0; /* Light text color */
-    margin-left: 10px;
-    flex-grow: 1;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    position: fixed;
+    bottom: 20px;
+    right: 100px; /* Adjust to position left of the play/pause button */
+    max-width: 200px; /* Adjust as needed */
+    text-align: right;
+    line-height: 60px; /* Match the height of the play/pause button */
+}
+
+#volumeSlider {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 50%;
+    height: 60px; /* Match the height of the play/pause button */
 }
 
 /* Timer styles */
 #timerDisplay, .additional-timer .timer-display {
-    font-size: 20vw; /* Make the digits take the whole page */
+    cursor: pointer;
+    font-size: 15rem;
+    margin-top: 5vh;
     text-align: center;
-    margin-bottom: 20px;
-    cursor: pointer;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-.timer-controls, .additional-timer .timer-controls {
-    display: flex;
-    justify-content: center;
-    gap: 10px; /* Standard gap between buttons */
+.startPauseBtn {
+    border-color: #94c3e9; /* Blue border for start/pause button */
 }
 
-.timer-controls button {
-    border: 2px solid; /* Add border */
-    padding: 10px 20px; /* Standard padding */
-    cursor: pointer;
-    transition: background-color 0.3s, border-color 0.3s;
-    border-radius: 5px; /* Standard border radius */
-    font-size: 16px; /* Standard font size */
-    background-color: #1e1e1e; /* Muted grey background */
-    color: #ffffff; /* White text color */
+.resetBtn {
+    border-color: #adadad; /* Gray border for reset button */
 }
 
-.timer-controls .startPauseBtn {
-    border-color: #2196F3; /* Blue border for start/pause button */
+.deleteBtn {
+    border-color: #f0837c; /* Red border for delete button */
 }
 
-.timer-controls .resetBtn{
-    border-color: #9E9E9E; /* Gray border for reset button */
-}
-
-.timer-controls .deleteBtn {
-    border-color: #F44336; /* Red border for delete button */
-}
-
-.timer-controls button:hover {
-    background-color: #555555; /* Slightly lighter dark color for hover state */
-}
-
-.add-timer-btn {
-    width: 40px;
-    height: 40px;
-    background-color: #1e1e1e; /* Dark button background */
-    color: #e0e0e0; /* Light text color */
-    border: none;
-    border-radius: 50%;
-    font-size: 20px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 10;
-}
-
-.add-timer-btn:hover {
-    background-color: #333333; /* Slightly lighter dark color */
-    transform: scale(1.1);
+.timer-control {
+    margin: 10px;
 }
 
 .additional-timer {
@@ -181,13 +63,6 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-}
-
-#additionalTimers {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
 }
 
 @media (min-width: 600px) {
@@ -199,66 +74,73 @@ body {
 
     .additional-timer {
         flex: 1 1 calc(33.333% - 40px); /* Adjust the width of each timer */
-        margin: 10px;
+
     }
 }
 
-/* Tab styles */
-.tabs {
-    display: flex;
-    justify-content: flex-start; /* Align tabs to the start (left) */
-    position: absolute;
-    top: 0;
+.sound-btn img {
     width: 100%;
-    background-color: #121212; /* Match the background color */
-    padding: 0;
-    border-bottom: none; /* Remove distinction between tabs and content */
+    height: auto;
+    max-width: 100px; /* Define the maximum width based on the smallest image */
+    max-height: 100px; /* Define the maximum height based on the smallest image */
+    object-fit: cover;
+    border-radius: 10px;
 }
 
-.tab-button {
-    background-color: #1e1e1e; /* Dark button background */
-    color: #e0e0e0; /* Light text color */
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    margin-right: 10px; /* Space between tabs */
-}
-
-.tab-button.active {
-    background-color: #333333; /* Slightly lighter dark color */
-}
-
-.tab-button:hover {
-    background-color: #444444; /* Different dark color for hover state */
-}
-
-.tab-content {
-    display: none;
-    margin-top: 50px; /* Space for the tabs */
-    padding: 20px; /* Padding for content distinction */
-    background-color: #121212; /* Match the background color */
-    border-radius: 10px; /* Rounded corners for content */
-}
-
-#today .container {
+#addTimerBtn, #playPauseBtn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100vh; /* Make the container take the whole page */
-    text-align: center;
+    font-size: 24px;
+    background-color: #28a745; /* Green background */
+    color: #fff; /* White text color */
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+#addTimerBtn:hover, #playPauseBtn:hover {
+    background-color: #218838; /* Darker green on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
 #dateDisplay {
-    font-size: 3vw; /* Smaller font size for the date */
-    margin: 10px 0;
+    margin-top: 5vh;
 }
 
 #timeDisplay {
-    font-size: 20vw; /* Larger font size for the time */
-    width: 100%; /* Take the whole page in horizontal direction */
-    margin: 10px 0;
+    font-size: 10rem;
+    margin-top: 15vh;
 }
 
+/* Tabs styles */
+.nav-tabs {
+    border-bottom: none; /* Remove the horizontal bar/separator */
+}
 
+.nav-tabs .nav-link {
+    border: none;
+    color: #e0e0e0;
+    background-color: transparent;
+    font-size: 1.1rem;
+    padding: 10px 20px;
+    transition: color 0.3s, background-color 0.3s;
+}
+
+.nav-tabs .nav-link.active {
+    color: #fff;
+    background-color: #28a745;
+    border-radius: 5px;
+}
+
+.nav-tabs .nav-link:hover {
+    color: #fff;
+    background-color: #218838;
+}

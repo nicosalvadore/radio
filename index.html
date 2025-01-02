@@ -5,51 +5,66 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Radio</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-    <div class="tabs">
-        <button class="tab-button active" data-tab="radio">Radio</button>
-        <button class="tab-button" data-tab="timer">Timer</button>
-        <button class="tab-button" data-tab="today">Today</button>
-    </div>
-    <div class="tab-content" id="radio">
-        <div class="container">
-            <div class="buttons">
-                <!-- Buttons will be dynamically generated here -->
-            </div>
-
-            <div class="controls">
-                <button id="playPauseBtn"><i class="fa fa-play"></i></button>
+<body class="d-flex flex-column align-items-center vh-100 bg-dark text-light">
+    <div class="container">
+        <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="radio-tab" data-bs-toggle="tab" href="#radio" role="tab" aria-controls="radio" aria-selected="true">Radio</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="timer-tab" data-bs-toggle="tab" href="#timer" role="tab" aria-controls="timer" aria-selected="false">Timer</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="today-tab" data-bs-toggle="tab" href="#today" role="tab" aria-controls="today" aria-selected="false">Today</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="radio" role="tabpanel" aria-labelledby="radio-tab">
+                <div class="row my-3">
+                    <div class="col-12">
+                        <div class="row row-cols-6" id="buttonsContainer">
+                            <!-- Buttons will be dynamically generated here -->
+                        </div>
+                    </div>
+                </div>
                 <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">
-                <span id="streamName"></span>
+                <div class="d-flex justify-content-center align-items-center">
+                    <button id="playPauseBtn" class="btn btn-success"><i class="fa fa-play"></i></button>
+                    <span id="streamName" class="ms-3"></span>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="timer" role="tabpanel" aria-labelledby="timer-tab">
+                <div class="row my-3">
+                    <div class="col-12 text-center">
+                        <div id="timerDisplay" class="display-1">
+                            <span class="digit">0</span><span class="digit">0</span>:<span class="digit">0</span><span class="digit">0</span>
+                        </div>
+                        <div class="btn-group">
+                            <button id="startPauseBtn" class="btn btn-dark startPauseBtn timer-control">Start</button>
+                            <button id="resetBtn" class="btn btn-dark resetBtn timer-control">Reset</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" id="additionalTimers">
+                    <!-- Additional timers will be dynamically generated here -->
+                </div>
+                <button id="addTimerBtn" class="btn btn-success"><i class="fa fa-plus"></i></button>
+            </div>
+            <div class="tab-pane fade" id="today" role="tabpanel" aria-labelledby="today-tab">
+                <div class="row my-3">
+                    <div class="col-12 text-center">
+                        <div id="dateDisplay" class="display-4"></div>
+                        <div id="timeDisplay" class="display-1"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <div class="tab-content" id="timer">
-        <div class="container">
-            <div class="additional-timer">
-                <div id="timerDisplay">
-                    <span class="digit">0</span><span class="digit">0</span>:<span class="digit">0</span><span class="digit">0</span>
-                </div>
-                <div class="timer-controls">
-                    <button id="startPauseBtn" class="startPauseBtn">Start</button>
-                    <button id="resetBtn" class="resetBtn">Reset</button>
-                </div>
-            </div>
-            <button id="addTimerBtn" class="add-timer-btn"><i class="fa fa-plus"></i></button>
-            <div id="additionalTimers"></div>
-        </div>
-    </div>
-    <div class="tab-content" id="today">
-        <div class="container">
-            <div id="dateDisplay"></div>
-            <div id="timeDisplay"></div>
-        </div>
-    </div>
-
-    <!-- Audio elements will be dynamically generated here -->
-
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="scripts.js"></script>
 </body>
 </html>

@@ -73,7 +73,7 @@ function playPauseSound() {
             currentlyPlayingSound.play();
             isPlaying = true;
             updatePlayPauseButton();
-            updateStreamName(currentlyPlayingButton.textContent);
+            updateStreamName(currentlyPlayingButton ? currentlyPlayingButton.querySelector('img').alt : '');
         }
     }
 }
@@ -92,27 +92,21 @@ function soundEnded() {
 
 // Function to create buttons from streams.json
 function createButtons(streams) {
-    const buttonsContainer = document.querySelector('.buttons');
+    const buttonsContainer = document.getElementById('buttonsContainer');
 
     streams.forEach((stream, index) => {
         const soundId = `sound${index + 1}`;
 
         // Create button element
         const button = document.createElement('div');
-        button.classList.add('sound-btn');
+        button.classList.add('col', 'sound-btn', 'btn', 'btn-dark');
         button.setAttribute('data-sound', soundId);
-        button.setAttribute('data-icon', 'fa fa-volume-up');
-        button.setAttribute('data-color', '#FF5722');
-        button.style.backgroundColor = '#FF5722';
 
         // Create image element
         const img = document.createElement('img');
         img.src = stream.image;
         img.alt = stream.name;
-        img.style.width = '100%';
-        img.style.height = '100%';
-        img.style.objectFit = 'cover';
-        img.style.borderRadius = '10px';
+        img.classList.add('img-fluid', 'rounded');
 
         // Append image to button
         button.appendChild(img);
@@ -172,18 +166,12 @@ setInterval(updateDateTime, 1000);
 updateDateTime();
 
 // Tab functionality
-document.querySelectorAll('.tab-button').forEach(button => {
-    button.addEventListener('click', () => {
-        document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(content => content.style.display = 'none');
-
-        button.classList.add('active');
-        document.getElementById(button.getAttribute('data-tab')).style.display = 'block';
+document.querySelectorAll('#myTab a').forEach(tab => {
+    tab.addEventListener('click', function (e) {
+        e.preventDefault();
+        new bootstrap.Tab(this).show();
     });
 });
-
-// Show the first tab by default
-document.getElementById('radio').style.display = 'block';
 
 // Timer functionality
 let timerInterval;
@@ -266,14 +254,10 @@ function flashScreen() {
     const flashInterval = setInterval(() => {
         const color = (flashes % 2 === 0) ? 'red' : '#121212';
         document.body.style.backgroundColor = color;
-        document.querySelector('.tabs').style.backgroundColor = color;
-        document.querySelector('.tab-content#timer').style.backgroundColor = color; // Flash the timer tab background
         flashes++;
         if (flashes >= 20) {
             clearInterval(flashInterval);
             document.body.style.backgroundColor = '#121212';
-            document.querySelector('.tabs').style.backgroundColor = '#121212';
-            document.querySelector('.tab-content#timer').style.backgroundColor = '#121212'; // Reset the timer tab background
         }
     }, 500); // Slower flashes, two per second
 }
@@ -284,16 +268,16 @@ const additionalTimersContainer = document.getElementById('additionalTimers');
 
 addTimerBtn.addEventListener('click', () => {
     const additionalTimer = document.createElement('div');
-    additionalTimer.classList.add('additional-timer');
+    additionalTimer.classList.add('additional-timer', 'col-12', 'col-md-4', 'text-center');
 
     additionalTimer.innerHTML = `
-        <div class="timer-display">
+        <div class="timer-display display-1">
             <span class="digit">0</span><span class="digit">0</span>:<span class="digit">0</span><span class="digit">0</span>
         </div>
-        <div class="timer-controls">
-            <button class="startPauseBtn">Start</button>
-            <button class="resetBtn">Reset</button>
-            <button class="deleteBtn">Delete</button>
+        <div class="btn-group">
+            <button class="startPauseBtn btn btn-dark timer-control">Start</button>
+            <button class="resetBtn btn btn-dark timer-control">Reset</button>
+            <button class="deleteBtn btn btn-dark timer-control">Delete</button>
         </div>
     `;
 
@@ -384,7 +368,11 @@ addTimerBtn.addEventListener('click', () => {
 function resizeTimers() {
     const timers = document.querySelectorAll('#timerDisplay, .additional-timer .timer-display');
     const timerCount = timers.length;
-    const fontSize = Math.min(20 / timerCount, 20) + 'vw';
+    if (timerCount === 1) {
+        timers[0].style.fontSize = '15rem';
+        return;
+    }
+    const fontSize = Math.min(10 / timerCount, 10) + 'rem';
     timers.forEach(timer => {
         timer.style.fontSize = fontSize;
     });
