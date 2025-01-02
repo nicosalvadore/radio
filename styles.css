@@ -144,3 +144,6 @@ body {
     color: #fff;
     background-color: #218838;
 }
+.flash-red {
+    background-color: #e45045 !important; /* Red background color */
+}

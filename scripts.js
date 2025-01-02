@@ -210,6 +210,7 @@ resetBtn.addEventListener('click', () => {
     timerValue = 0;
     updateTimerDisplay();
     startPauseBtn.textContent = 'Start';
+    document.body.classList.remove('flash-red'); // Remove flash-red class when reset
 });
 
 function updateTimerValue() {
@@ -252,12 +253,10 @@ function playAlarm() {
 function flashScreen() {
     let flashes = 0;
     const flashInterval = setInterval(() => {
-        const color = (flashes % 2 === 0) ? 'red' : '#121212';
-        document.body.style.backgroundColor = color;
+        document.body.classList.toggle('flash-red');
         flashes++;
-        if (flashes >= 20) {
+        if (flashes >= 10) {
             clearInterval(flashInterval);
-            document.body.style.backgroundColor = '#121212';
         }
     }, 500); // Slower flashes, two per second
 }
@@ -320,6 +319,7 @@ addTimerBtn.addEventListener('click', () => {
         timerValue = 0;
         updateTimerDisplay();
         startPauseBtn.textContent = 'Start';
+        document.body.classList.remove('flash-red'); // Remove flash-red class when reset
     });
 
     deleteBtn.addEventListener('click', () => {
