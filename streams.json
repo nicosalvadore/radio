@@ -1,0 +1,82 @@
+[
+    {
+        "stream": "http://stream.srg-ssr.ch/m/couleur3/mp3_128",
+        "name": "Couleur 3",
+        "image": "media/couleur3.png"
+    },
+    {
+        "stream": "http://grrif.ice.infomaniak.ch/grrif-high.mp3",
+        "name": "Griff",
+        "image": "media/griff.png"
+    },
+    {
+        "stream": "http://rougefm.ice.infomaniak.ch/rougefm-high.mp3",
+        "name": "Rouge FM",
+        "image": "media/rougefm.png"
+    },
+    {
+        "stream": "http://stream.srg-ssr.ch/m/rsj/mp3_128",
+        "name": "Radio Swiss Jazz",
+        "image": "media/rsj.png"
+    },
+    {
+        "stream": "http://stream.srg-ssr.ch/m/rsp/mp3_128",
+        "name": "Radio Swiss Pop",
+        "image": "media/rsp.png"
+    },
+    {
+        "stream": "http://stream.srg-ssr.ch/m/rsc_fr/mp3_128",
+        "name": "Radio Swiss Classic",
+        "image": "media/rsc.png"
+    },
+    {
+        "stream": "http://hd.lagrosseradio.info/lagrosseradio-rock-192.mp3",
+        "name": "La Grosse Radio Rock",
+        "image": "media/lagrosseradiorock.png"
+    },
+    {
+        "stream": "http://rundfunk.ice.infomaniak.ch/rundfunk-192.mp3",
+        "name": "RundFunk",
+        "image": "media/rundfunk.png"
+    },
+    {
+        "stream": "http://stream.srg-ssr.ch/m/la-1ere/mp3_128",
+        "name": "La 1ère",
+        "image": "media/la1ere.png"
+    },
+    {
+        "stream": "http://stream.srg-ssr.ch/m/espace-2/mp3_128",
+        "name": "Espace 2",
+        "image": "media/espace2.png"
+    },
+    {
+        "stream": "http://direct.franceinter.fr/live/franceinter-midfi.mp3",
+        "name": "France Inter",
+        "image": "media/franceinter.png"
+    },
+    {
+        "stream": "https://verticalradio.ice.infomaniak.ch/verticalradio-128.mp3",
+        "name": "Vertical",
+        "image": "media/vertical.png"
+    },
+    {
+        "stream": "https://streams.bigfm.de/bigfm-oldschool-128-aac?usid=0-0-H-A-D-01&amp;",
+        "name": "Big FM Old School",
+        "image": "media/bigfmoldschool.png"
+    },
+    {
+        "stream": "https://live7.avf.ch/ipmusic",
+        "name": "IP Music",
+        "image": "media/ipmusic.png"
+    },
+    {
+        "stream": "http://icecast.radiofrance.fr/fip-midfi.mp3",
+        "name": "Fip",
+        "image": "media/fip.png"
+    },
+    {
+        "stream": "http://stream.srg-ssr.ch/m/option-musique/mp3_128",
+        "name": "Option Musique",
+        "image": "media/optionmusique.png"
+    }
+]

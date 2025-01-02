@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radio</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="tabs">
+        <button class="tab-button active" data-tab="radio">Radio</button>
+        <button class="tab-button" data-tab="timer">Timer</button>
+        <button class="tab-button" data-tab="today">Today</button>
+    </div>
+    <div class="tab-content" id="radio">
+        <div class="container">
+            <div class="buttons">
+                <!-- Buttons will be dynamically generated here -->
+            </div>
+
+            <div class="controls">
+                <button id="playPauseBtn"><i class="fa fa-play"></i></button>
+                <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">
+                <span id="streamName"></span>
+            </div>
+        </div>
+    </div>
+    <div class="tab-content" id="timer">
+        <div class="container">
+            <div class="additional-timer">
+                <div id="timerDisplay">
+                    <span class="digit">0</span><span class="digit">0</span>:<span class="digit">0</span><span class="digit">0</span>
+                </div>
+                <div class="timer-controls">
+                    <button id="startPauseBtn" class="startPauseBtn">Start</button>
+                    <button id="resetBtn" class="resetBtn">Reset</button>
+                </div>
+            </div>
+            <button id="addTimerBtn" class="add-timer-btn"><i class="fa fa-plus"></i></button>
+            <div id="additionalTimers"></div>
+        </div>
+    </div>
+    <div class="tab-content" id="today">
+        <div class="container">
+            <div id="dateDisplay"></div>
+            <div id="timeDisplay"></div>
+        </div>
+    </div>
+
+    <!-- Audio elements will be dynamically generated here -->
+
+    <script src="scripts.js"></script>
+</body>
+</html>
