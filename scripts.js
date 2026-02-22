@@ -1,49 +1,52 @@
-// Function to play or stop sounds
-function toggleSound(streamUrl, soundId, button, streamName) {
-    let sound = document.getElementById(soundId);
+// ============================================================
+// Improvement 2: Single <audio> element
+// ============================================================
+const audio = new Audio();
+let isPlaying = false;
+let currentlyPlayingButton = null;
+let currentStreamName = '';
 
-    // If the audio element does not exist, create it
-    if (!sound) {
-        sound = document.createElement('audio');
-        sound.id = soundId;
-        sound.addEventListener('ended', soundEnded);
-        document.body.appendChild(sound);
+audio.addEventListener('ended', soundEnded);
+audio.addEventListener('error', () => {
+    updateStreamName('Stream unavailable', false);
+    isPlaying = false;
+    if (currentlyPlayingButton) {
+        currentlyPlayingButton.classList.remove('playing');
+        currentlyPlayingButton = null;
     }
+    updatePlayPauseButton();
+});
 
-    // If there is a currently playing sound, pause it, remove its visual indication, and clear its src
-    if (currentlyPlayingSound && currentlyPlayingSound !== sound) {
-        currentlyPlayingSound.pause();
-        currentlyPlayingSound.src = "";
+// ============================================================
+// Audio functions
+// ============================================================
+function toggleSound(streamUrl, button, streamName) {
+    if (currentlyPlayingButton && currentlyPlayingButton !== button) {
         currentlyPlayingButton.classList.remove('playing');
     }
 
-    // Set the src of the sound to the stream URL
-    sound.src = streamUrl;
+    audio.src = streamUrl;
+    audio.currentTime = 0;
 
-    // Reset the current time of the sound to the beginning
-    sound.currentTime = 0;
-
-    // Show loading spinner
     updateStreamName(streamName, true);
 
-    // Play the selected sound
-    sound.play().then(() => {
-        currentlyPlayingSound = sound;
+    audio.play().then(() => {
         currentlyPlayingButton = button;
-        button.classList.add('playing'); // Add visual indication to the button
+        currentStreamName = streamName;
+        button.classList.add('playing');
         isPlaying = true;
         updatePlayPauseButton();
-        updateStreamName(streamName, false); // Remove loading spinner
+        updateStreamName(streamName, false);
+        // Improvement 3: Save selected station
+        localStorage.setItem('radio_station', streamUrl);
     }).catch((error) => {
         console.error('Error playing sound:', error);
-        updateStreamName('', false); // Remove loading spinner
+        updateStreamName('', false);
     });
 }
 
-// Function to update the play/pause button state based on the current sound state
 function updatePlayPauseButton() {
     const playPauseButton = document.getElementById('playPauseBtn');
-
     if (isPlaying) {
         playPauseButton.innerHTML = '<i class="fa fa-pause"></i>';
     } else {
@@ -51,7 +54,6 @@ function updatePlayPauseButton() {
     }
 }
 
-// Function to update the stream name display
 function updateStreamName(name, isLoading) {
     const streamNameElement = document.getElementById('streamName');
     if (isLoading) {
@@ -61,67 +63,64 @@ function updateStreamName(name, isLoading) {
     }
 }
 
-// Function to handle play/pause button click
 function playPauseSound() {
     if (isPlaying) {
-        currentlyPlayingSound.pause();
+        audio.pause();
         isPlaying = false;
         updatePlayPauseButton();
         updateStreamName('');
     } else {
-        if (currentlyPlayingSound) {
-            currentlyPlayingSound.play();
-            isPlaying = true;
-            updatePlayPauseButton();
-            updateStreamName(currentlyPlayingButton ? currentlyPlayingButton.querySelector('img').alt : '');
+        if (audio.src) {
+            audio.play().then(() => {
+                isPlaying = true;
+                updatePlayPauseButton();
+                updateStreamName(currentStreamName);
+            }).catch(console.error);
         }
     }
 }
 
-// Function to handle sound ended event
 function soundEnded() {
-    const button = currentlyPlayingButton;
-    if (button) {
-        button.classList.remove('playing');
+    if (currentlyPlayingButton) {
+        currentlyPlayingButton.classList.remove('playing');
     }
-    currentlyPlayingSound = null;
     isPlaying = false;
     updatePlayPauseButton();
     updateStreamName('');
 }
 
-// Function to create buttons from streams.json
 function createButtons(streams) {
     const buttonsContainer = document.getElementById('buttonsContainer');
 
-    streams.forEach((stream, index) => {
-        const soundId = `sound${index + 1}`;
-
-        // Create button element
+    streams.forEach((stream) => {
         const button = document.createElement('div');
         button.classList.add('col', 'sound-btn', 'btn', 'btn-dark');
-        button.setAttribute('data-sound', soundId);
+        button.setAttribute('data-stream', stream.stream);
 
-        // Create image element
         const img = document.createElement('img');
         img.src = stream.image;
         img.alt = stream.name;
         img.classList.add('img-fluid', 'rounded');
 
-        // Append image to button
         button.appendChild(img);
 
-        // Add event listener to button
         button.addEventListener('click', () => {
-            toggleSound(stream.stream, soundId, button, stream.name);
+            toggleSound(stream.stream, button, stream.name);
         });
 
-        // Append button to container
         buttonsContainer.appendChild(button);
     });
+
+    // Improvement 3: Highlight the saved station (no auto-play)
+    const savedStation = localStorage.getItem('radio_station');
+    if (savedStation) {
+        const savedButton = buttonsContainer.querySelector(`[data-stream="${CSS.escape(savedStation)}"]`);
+        if (savedButton) {
+            savedButton.style.borderColor = '#0d6efd';
+        }
+    }
 }
 
-// Fetch streams from streams.json and create buttons
 fetch('streams.json')
     .then(response => response.json())
     .then(streams => {
@@ -129,23 +128,27 @@ fetch('streams.json')
     })
     .catch(error => console.error('Error fetching streams:', error));
 
-// Set up event listeners for play/pause button
 const playPauseBtn = document.getElementById('playPauseBtn');
 const volumeSlider = document.getElementById('volumeSlider');
-let isPlaying = false; // This tracks the overall play state (whether any sound is playing)
-let currentlyPlayingSound = null; // This will track the currently playing sound
-let currentlyPlayingButton = null; // This will track the currently playing button
 
 playPauseBtn.addEventListener('click', playPauseSound);
 
-// Set up event listener for volume slider
+// Improvement 3: Restore saved volume on page load
+const savedVolume = localStorage.getItem('radio_volume');
+if (savedVolume !== null) {
+    volumeSlider.value = savedVolume;
+    audio.volume = parseFloat(savedVolume);
+}
+
 volumeSlider.addEventListener('input', (event) => {
-    if (currentlyPlayingSound) {
-        currentlyPlayingSound.volume = event.target.value;
-    }
+    audio.volume = event.target.value;
+    // Improvement 3: Save volume
+    localStorage.setItem('radio_volume', event.target.value);
 });
 
-// Function to update the date and time display
+// ============================================================
+// Date/Time
+// ============================================================
 function updateDateTime() {
     const dateDisplay = document.getElementById('dateDisplay');
     const timeDisplay = document.getElementById('timeDisplay');
@@ -159,10 +162,7 @@ function updateDateTime() {
     timeDisplay.textContent = timeString;
 }
 
-// Update the date and time every second
 setInterval(updateDateTime, 1000);
-
-// Initialize the date and time display
 updateDateTime();
 
 // Tab functionality
@@ -173,78 +173,9 @@ document.querySelectorAll('#myTab a').forEach(tab => {
     });
 });
 
-// Timer functionality
-let timerInterval;
-let timerValue = 0;
-let isPaused = false;
-
-const timerDisplay = document.getElementById('timerDisplay');
-const startPauseBtn = document.getElementById('startPauseBtn');
-const resetBtn = document.getElementById('resetBtn');
-
-timerDisplay.addEventListener('click', (event) => {
-    if (event.target.classList.contains('digit')) {
-        let value = parseInt(event.target.textContent, 10);
-        value = (value + 1) % 10;
-        event.target.textContent = value;
-        updateTimerValue();
-    }
-});
-
-startPauseBtn.addEventListener('click', () => {
-    if (timerInterval) {
-        isPaused = !isPaused;
-        startPauseBtn.textContent = isPaused ? 'Start' : 'Pause';
-    } else {
-        if (timerValue > 0) {
-            isPaused = false;
-            timerInterval = setInterval(countDown, 1000);
-            startPauseBtn.textContent = 'Pause';
-        }
-    }
-});
-
-resetBtn.addEventListener('click', () => {
-    clearInterval(timerInterval);
-    timerInterval = null;
-    timerValue = 0;
-    updateTimerDisplay();
-    startPauseBtn.textContent = 'Start';
-    document.body.classList.remove('flash-red'); // Remove flash-red class when reset
-});
-
-function updateTimerValue() {
-    const digits = timerDisplay.querySelectorAll('.digit');
-    const minutes = parseInt(digits[0].textContent + digits[1].textContent, 10);
-    const seconds = parseInt(digits[2].textContent + digits[3].textContent, 10);
-    timerValue = minutes * 60 + seconds;
-}
-
-function updateTimerDisplay() {
-    const minutes = String(Math.floor(timerValue / 60)).padStart(2, '0');
-    const seconds = String(timerValue % 60).padStart(2, '0');
-    const digits = timerDisplay.querySelectorAll('.digit');
-    digits[0].textContent = minutes[0];
-    digits[1].textContent = minutes[1];
-    digits[2].textContent = seconds[0];
-    digits[3].textContent = seconds[1];
-}
-
-function countDown() {
-    if (!isPaused) {
-        if (timerValue > 0) {
-            timerValue--;
-            updateTimerDisplay();
-        } else {
-            clearInterval(timerInterval);
-            timerInterval = null;
-            playAlarm();
-            flashScreen();
-            startPauseBtn.textContent = 'Start';
-        }
-    }
-}
-
+// ============================================================
+// Utilities used by Timer
+// ============================================================
 function playAlarm() {
     const alarm = new Audio('media/alarm.mp3');
     alarm.play();
@@ -258,109 +189,151 @@ function flashScreen() {
         if (flashes >= 10) {
             clearInterval(flashInterval);
         }
-    }, 500); // Slower flashes, two per second
+    }, 500);
 }
 
-// Additional timer functionality
-const addTimerBtn = document.getElementById('addTimerBtn');
-const additionalTimersContainer = document.getElementById('additionalTimers');
-
-addTimerBtn.addEventListener('click', () => {
-    const additionalTimer = document.createElement('div');
-    additionalTimer.classList.add('additional-timer', 'col-12', 'col-md-4', 'text-center');
-
-    additionalTimer.innerHTML = `
-        <div class="timer-display display-1">
-            <span class="digit">0</span><span class="digit">0</span>:<span class="digit">0</span><span class="digit">0</span>
-        </div>
-        <div class="btn-group">
-            <button class="startPauseBtn btn btn-dark timer-control">Start</button>
-            <button class="resetBtn btn btn-dark timer-control">Reset</button>
-            <button class="deleteBtn btn btn-dark timer-control">Delete</button>
-        </div>
-    `;
-
-    additionalTimersContainer.appendChild(additionalTimer);
-
-    const timerDisplay = additionalTimer.querySelector('.timer-display');
-    const startPauseBtn = additionalTimer.querySelector('.startPauseBtn');
-    const resetBtn = additionalTimer.querySelector('.resetBtn');
-    const deleteBtn = additionalTimer.querySelector('.deleteBtn');
-
-    let timerInterval;
-    let timerValue = 0;
-    let isPaused = false;
-
-    timerDisplay.addEventListener('click', (event) => {
-        if (event.target.classList.contains('digit')) {
-            let value = parseInt(event.target.textContent, 10);
-            value = (value + 1) % 10;
-            event.target.textContent = value;
-            updateTimerValue();
-        }
-    });
-
-    startPauseBtn.addEventListener('click', () => {
-        if (timerInterval) {
-            isPaused = !isPaused;
-            startPauseBtn.textContent = isPaused ? 'Start' : 'Pause';
-        } else {
-            if (timerValue > 0) {
-                isPaused = false;
-                timerInterval = setInterval(countDown, 1000);
-                startPauseBtn.textContent = 'Pause';
-            }
-        }
-    });
-
-    resetBtn.addEventListener('click', () => {
-        clearInterval(timerInterval);
-        timerInterval = null;
-        timerValue = 0;
-        updateTimerDisplay();
-        startPauseBtn.textContent = 'Start';
-        document.body.classList.remove('flash-red'); // Remove flash-red class when reset
-    });
-
-    deleteBtn.addEventListener('click', () => {
-        clearInterval(timerInterval);
-        additionalTimer.remove();
-        resizeTimers();
-        updateGridView();
-    });
-
-    function updateTimerValue() {
-        const digits = timerDisplay.querySelectorAll('.digit');
-        const minutes = parseInt(digits[0].textContent + digits[1].textContent, 10);
-        const seconds = parseInt(digits[2].textContent + digits[3].textContent, 10);
-        timerValue = minutes * 60 + seconds;
+// ============================================================
+// Improvement 1: Timer class
+// ============================================================
+class Timer {
+    constructor({ display, startPauseBtn, resetBtn, deleteBtn }) {
+        this.display = display;
+        this.startPauseBtn = startPauseBtn;
+        this.resetBtn = resetBtn;
+        this.deleteBtn = deleteBtn || null;
+        this.timerValue = 0;
+        this.timerInterval = null;
+        this._bindEvents();
     }
 
-    function updateTimerDisplay() {
-        const minutes = String(Math.floor(timerValue / 60)).padStart(2, '0');
-        const seconds = String(timerValue % 60).padStart(2, '0');
-        const digits = timerDisplay.querySelectorAll('.digit');
+    _bindEvents() {
+        this.display.addEventListener('click', (event) => {
+            if (event.target.classList.contains('digit')) {
+                let value = parseInt(event.target.textContent, 10);
+                value = (value + 1) % 10;
+                event.target.textContent = value;
+                this._updateTimerValue();
+            }
+        });
+
+        this.startPauseBtn.addEventListener('click', () => this._toggleStartPause());
+        this.resetBtn.addEventListener('click', () => this.reset());
+
+        if (this.deleteBtn) {
+            this.deleteBtn.addEventListener('click', () => {
+                clearInterval(this.timerInterval);
+                this.display.closest('.additional-timer').remove();
+                resizeTimers();
+                updateGridView();
+            });
+        }
+    }
+
+    _toggleStartPause() {
+        if (this.timerInterval) {
+            // Currently running — pause by stopping the interval
+            clearInterval(this.timerInterval);
+            this.timerInterval = null;
+            this.startPauseBtn.textContent = 'Start';
+        } else {
+            // Stopped or paused — start/resume
+            if (this.timerValue > 0) {
+                this.timerInterval = setInterval(() => this._countDown(), 1000);
+                this.startPauseBtn.textContent = 'Pause';
+            }
+        }
+    }
+
+    reset() {
+        clearInterval(this.timerInterval);
+        this.timerInterval = null;
+        this.timerValue = 0;
+        this._updateDisplay();
+        this.startPauseBtn.textContent = 'Start';
+        document.body.classList.remove('flash-red');
+    }
+
+    _countDown() {
+        if (this.timerValue > 0) {
+            this.timerValue--;
+            this._updateDisplay();
+        } else {
+            clearInterval(this.timerInterval);
+            this.timerInterval = null;
+            playAlarm();
+            flashScreen();
+            this.startPauseBtn.textContent = 'Start';
+        }
+    }
+
+    _updateTimerValue() {
+        const digits = this.display.querySelectorAll('.digit');
+        const minutes = parseInt(digits[0].textContent + digits[1].textContent, 10);
+        const seconds = parseInt(digits[2].textContent + digits[3].textContent, 10);
+        this.timerValue = minutes * 60 + seconds;
+    }
+
+    _updateDisplay() {
+        const minutes = String(Math.floor(this.timerValue / 60)).padStart(2, '0');
+        const seconds = String(this.timerValue % 60).padStart(2, '0');
+        const digits = this.display.querySelectorAll('.digit');
         digits[0].textContent = minutes[0];
         digits[1].textContent = minutes[1];
         digits[2].textContent = seconds[0];
         digits[3].textContent = seconds[1];
     }
 
-    function countDown() {
-        if (!isPaused) {
-            if (timerValue > 0) {
-                timerValue--;
-                updateTimerDisplay();
-            } else {
-                clearInterval(timerInterval);
-                timerInterval = null;
-                playAlarm();
-                flashScreen();
-                startPauseBtn.textContent = 'Start';
-            }
-        }
+    static createAdditional(wrapper) {
+        wrapper.innerHTML = `
+            <div class="timer-display display-1">
+                <span class="digit">0</span><span class="digit">0</span>:<span class="digit">0</span><span class="digit">0</span>
+            </div>
+            <div class="btn-group">
+                <button class="startPauseBtn btn btn-dark timer-control">Start</button>
+                <button class="resetBtn btn btn-dark timer-control">Reset</button>
+                <button class="deleteBtn btn btn-dark timer-control">Delete</button>
+            </div>
+        `;
+        return new Timer({
+            display: wrapper.querySelector('.timer-display'),
+            startPauseBtn: wrapper.querySelector('.startPauseBtn'),
+            resetBtn: wrapper.querySelector('.resetBtn'),
+            deleteBtn: wrapper.querySelector('.deleteBtn'),
+        });
     }
+}
 
+// Main timer initialization
+const mainTimer = new Timer({
+    display: document.getElementById('timerDisplay'),
+    startPauseBtn: document.getElementById('startPauseBtn'),
+    resetBtn: document.getElementById('resetBtn'),
+});
+
+// Improvement 3: Restore saved timer value on page load
+const savedTimerValue = localStorage.getItem('timer_value');
+if (savedTimerValue !== null) {
+    mainTimer.timerValue = parseInt(savedTimerValue, 10);
+    mainTimer._updateDisplay();
+}
+
+// Improvement 3: Save timer value on each digit click
+document.getElementById('timerDisplay').addEventListener('click', (event) => {
+    if (event.target.classList.contains('digit')) {
+        // Timer class listener fires first and updates timerValue; we read it here
+        localStorage.setItem('timer_value', mainTimer.timerValue);
+    }
+});
+
+// Additional timer button
+const addTimerBtn = document.getElementById('addTimerBtn');
+const additionalTimersContainer = document.getElementById('additionalTimers');
+
+addTimerBtn.addEventListener('click', () => {
+    const wrapper = document.createElement('div');
+    wrapper.classList.add('additional-timer', 'col-12', 'col-md-4', 'text-center');
+    additionalTimersContainer.appendChild(wrapper);
+    Timer.createAdditional(wrapper);
     resizeTimers();
     updateGridView();
 });
