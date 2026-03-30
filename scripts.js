@@ -47,7 +47,7 @@ function toggleSound(streamUrl, button, streamName) {
 
 function updatePlayPauseButton() {
     const playPauseButton = document.getElementById('playPauseBtn');
-    if (isPlaying) {
+    if (isPlaying || isYoutubePlaying) {
         playPauseButton.innerHTML = '<i class="fa fa-pause"></i>';
     } else {
         playPauseButton.innerHTML = '<i class="fa fa-play"></i>';
@@ -64,7 +64,9 @@ function updateStreamName(name, isLoading) {
 }
 
 function playPauseSound() {
-    if (isPlaying) {
+    if (isYoutubePlaying) {
+        stopYoutube();
+    } else if (isPlaying) {
         audio.pause();
         isPlaying = false;
         updatePlayPauseButton();
@@ -89,13 +91,77 @@ function soundEnded() {
     updateStreamName('');
 }
 
+// ============================================================
+// YouTube player
+// ============================================================
+const youtubePlayer = document.getElementById('youtubePlayer');
+let isYoutubePlaying = false;
+let ytPlayer = null;
+
+// Load YouTube IFrame API
+const ytScript = document.createElement('script');
+ytScript.src = 'https://www.youtube.com/iframe_api';
+document.head.appendChild(ytScript);
+
+window.onYouTubeIframeAPIReady = function () {};
+
+function playYoutube(videoId, button, streamName) {
+    if (currentlyPlayingButton && currentlyPlayingButton !== button) {
+        currentlyPlayingButton.classList.remove('playing');
+    }
+
+    audio.pause();
+    isPlaying = false;
+
+    if (ytPlayer) {
+        ytPlayer.destroy();
+        ytPlayer = null;
+    }
+
+    const container = document.getElementById('youtubeIframeContainer');
+    container.innerHTML = '';
+    const div = document.createElement('div');
+    container.appendChild(div);
+
+    ytPlayer = new YT.Player(div, {
+        videoId,
+        playerVars: { autoplay: 1, rel: 0 },
+        events: {
+            onReady: (e) => e.target.setVolume(volumeSlider.value * 100),
+        },
+    });
+
+    youtubePlayer.classList.remove('d-none');
+    isYoutubePlaying = true;
+
+    currentlyPlayingButton = button;
+    currentStreamName = streamName;
+    button.classList.add('playing');
+    updateStreamName(streamName, false);
+    updatePlayPauseButton();
+}
+
+function stopYoutube() {
+    if (ytPlayer) {
+        ytPlayer.destroy();
+        ytPlayer = null;
+    }
+    youtubePlayer.classList.add('d-none');
+    isYoutubePlaying = false;
+    if (currentlyPlayingButton) {
+        currentlyPlayingButton.classList.remove('playing');
+        currentlyPlayingButton = null;
+    }
+    updateStreamName('');
+    updatePlayPauseButton();
+}
+
 function createButtons(streams) {
     const buttonsContainer = document.getElementById('buttonsContainer');
 
     streams.forEach((stream) => {
         const button = document.createElement('div');
         button.classList.add('col', 'sound-btn', 'btn', 'btn-dark');
-        button.setAttribute('data-stream', stream.stream);
 
         const img = document.createElement('img');
         img.src = stream.image;
@@ -104,21 +170,22 @@ function createButtons(streams) {
 
         button.appendChild(img);
 
-        button.addEventListener('click', () => {
-            toggleSound(stream.stream, button, stream.name);
-        });
+        if (stream.type === 'youtube') {
+            button.setAttribute('data-youtube', stream.youtubeVideoId);
+            button.addEventListener('click', () => {
+                playYoutube(stream.youtubeVideoId, button, stream.name);
+            });
+        } else {
+            button.setAttribute('data-stream', stream.stream);
+            button.addEventListener('click', () => {
+                stopYoutube();
+                toggleSound(stream.stream, button, stream.name);
+            });
+        }
 
         buttonsContainer.appendChild(button);
     });
 
-    // Improvement 3: Highlight the saved station (no auto-play)
-    const savedStation = localStorage.getItem('radio_station');
-    if (savedStation) {
-        const savedButton = buttonsContainer.querySelector(`[data-stream="${CSS.escape(savedStation)}"]`);
-        if (savedButton) {
-            savedButton.style.borderColor = '#0d6efd';
-        }
-    }
 }
 
 fetch('streams.json')
@@ -142,7 +209,9 @@ if (savedVolume !== null) {
 
 volumeSlider.addEventListener('input', (event) => {
     audio.volume = event.target.value;
-    // Improvement 3: Save volume
+    if (ytPlayer) {
+        ytPlayer.setVolume(event.target.value * 100);
+    }
     localStorage.setItem('radio_volume', event.target.value);
 });
 

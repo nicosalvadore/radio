@@ -78,5 +78,29 @@
         "stream": "http://stream.srg-ssr.ch/m/option-musique/mp3_128",
         "name": "Option Musique",
         "image": "media/optionmusique.png"
+    },
+    {
+        "type": "youtube",
+        "youtubeVideoId": "jfKfPfyJRdk",
+        "name": "Lofi Girl - Study",
+        "image": "https://i.ytimg.com/vi/jfKfPfyJRdk/mqdefault.jpg"
+    },
+    {
+        "type": "youtube",
+        "youtubeVideoId": "HuFYqnbVbzY",
+        "name": "Lofi Girl - Chill",
+        "image": "https://i.ytimg.com/vi/HuFYqnbVbzY/mqdefault.jpg"
+    },
+    {
+        "type": "youtube",
+        "youtubeVideoId": "4xDzrJKXOOY",
+        "name": "Lofi Girl - Synthwave",
+        "image": "https://i.ytimg.com/vi/4xDzrJKXOOY/mqdefault.jpg"
+    },
+    {
+        "type": "youtube",
+        "youtubeVideoId": "28KRPhVzCus",
+        "name": "Lofi Girl - Sleep",
+        "image": "https://i.ytimg.com/vi/28KRPhVzCus/mqdefault.jpg"
     }
 ]

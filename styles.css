@@ -79,10 +79,8 @@ body {
 }
 
 .sound-btn img {
-    width: 100%;
-    height: auto;
-    max-width: 100px; /* Define the maximum width based on the smallest image */
-    max-height: 100px; /* Define the maximum height based on the smallest image */
+    width: 100px;
+    height: 100px;
     object-fit: cover;
     border-radius: 10px;
 }
@@ -146,4 +144,24 @@ body {
 }
 .flash-red {
     background-color: #e45045 !important; /* Red background color */
+}
+
+.youtube-player {
+    margin: 10px auto;
+    width: 100%;
+    max-width: 320px;
+    aspect-ratio: 16 / 9;
+    position: relative;
+}
+
+#youtubeIframeContainer {
+    position: absolute;
+    inset: 0;
+}
+
+.youtube-player iframe {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    display: block;
 }
