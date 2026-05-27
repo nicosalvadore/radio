@@ -20,6 +20,9 @@
             <li class="nav-item">
                 <a class="nav-link" id="today-tab" data-bs-toggle="tab" href="#today" role="tab" aria-controls="today" aria-selected="false">Today</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" id="recipes-tab" data-bs-toggle="tab" href="#recipes" role="tab" aria-controls="recipes" aria-selected="false">Recipes</a>
+            </li>
         </ul>
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="radio" role="tabpanel" aria-labelledby="radio-tab">
@@ -64,9 +67,16 @@
                     </div>
                 </div>
             </div>
+            <div class="tab-pane fade" id="recipes" role="tabpanel" aria-labelledby="recipes-tab">
+                <div class="row my-3">
+                    <div class="col-md-3 col-12" id="recipeList"></div>
+                    <div class="col-md-9 col-12" id="recipeContent"></div>
+                </div>
+            </div>
         </div>
     </div>
     
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="scripts.js"></script>
 </body>

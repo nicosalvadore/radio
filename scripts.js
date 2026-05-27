@@ -428,3 +428,49 @@ function updateGridView() {
         additionalTimersContainer.classList.remove('grid-view');
     }
 }
+
+// ============================================================
+// Recipes
+// ============================================================
+let recipesLoaded = false;
+
+document.getElementById('recipes-tab').addEventListener('click', loadRecipes);
+
+function loadRecipes() {
+    if (recipesLoaded) return;
+    recipesLoaded = true;
+
+    fetch('recipes/index.json')
+        .then(r => r.json())
+        .then(files => Promise.all(
+            files.map(file =>
+                fetch(`recipes/${file}`)
+                    .then(r => r.text())
+                    .then(md => ({ name: extractRecipeH1(md), md }))
+            )
+        ))
+        .then(recipes => recipes.sort((a, b) => a.name.localeCompare(b.name)))
+        .then(recipes => renderRecipeList(recipes))
+        .catch(err => console.error('Error loading recipes:', err));
+}
+
+function extractRecipeH1(md) {
+    const match = md.match(/^#\s+(.+)$/m);
+    return match ? match[1].trim() : 'Untitled';
+}
+
+function renderRecipeList(recipes) {
+    const list = document.getElementById('recipeList');
+    recipes.forEach((recipe, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'recipe-item btn btn-dark w-100 text-start mb-1';
+        btn.textContent = recipe.name;
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.recipe-item').forEach(el => el.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('recipeContent').innerHTML = marked.parse(recipe.md);
+        });
+        list.appendChild(btn);
+        if (i === 0) btn.click();
+    });
+}

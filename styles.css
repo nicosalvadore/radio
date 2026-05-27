@@ -159,6 +159,59 @@ body {
     inset: 0;
 }
 
+/* Recipe styles */
+#recipeList {
+    border-right: 1px solid #333;
+}
+
+.recipe-item {
+    border-radius: 5px !important;
+    color: #e0e0e0;
+}
+
+.recipe-item.active {
+    background-color: #28a745 !important;
+    color: #fff !important;
+}
+
+#recipeContent {
+    padding: 0 1.2rem;
+}
+
+#recipeContent h1 {
+    font-size: 1.6rem;
+    color: #fff;
+    margin-bottom: 0.3rem;
+}
+
+#recipeContent h2 {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #6c757d;
+    margin-top: 1.4rem;
+    margin-bottom: 0.5rem;
+}
+
+#recipeContent ul,
+#recipeContent ol {
+    padding-left: 1.4rem;
+    margin-bottom: 0;
+}
+
+#recipeContent li {
+    margin-bottom: 0.25rem;
+}
+
+#recipeContent p {
+    color: #adb5bd;
+    margin-bottom: 0.5rem;
+}
+
+#recipeContent strong {
+    color: #e0e0e0;
+}
+
 .youtube-player iframe {
     width: 100%;
     height: 100%;
