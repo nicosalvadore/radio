@@ -81,26 +81,26 @@
     },
     {
         "type": "youtube",
-        "youtubeVideoId": "jfKfPfyJRdk",
+        "youtubeVideoId": "X4VbdwhkE10",
         "name": "Lofi Girl - Study",
-        "image": "https://i.ytimg.com/vi/jfKfPfyJRdk/mqdefault.jpg"
+        "image": "https://i.ytimg.com/vi/X4VbdwhkE10/mqdefault.jpg"
     },
     {
         "type": "youtube",
-        "youtubeVideoId": "HuFYqnbVbzY",
-        "name": "Lofi Girl - Chill",
-        "image": "https://i.ytimg.com/vi/HuFYqnbVbzY/mqdefault.jpg"
-    },
-    {
-        "type": "youtube",
-        "youtubeVideoId": "4xDzrJKXOOY",
-        "name": "Lofi Girl - Synthwave",
-        "image": "https://i.ytimg.com/vi/4xDzrJKXOOY/mqdefault.jpg"
-    },
-    {
-        "type": "youtube",
-        "youtubeVideoId": "28KRPhVzCus",
+        "youtubeVideoId": "JD-kMIpDfnY",
         "name": "Lofi Girl - Sleep",
-        "image": "https://i.ytimg.com/vi/28KRPhVzCus/mqdefault.jpg"
+        "image": "https://i.ytimg.com/vi/JD-kMIpDfnY/mqdefault.jpg"
+    },
+    {
+        "type": "youtube",
+        "youtubeVideoId": "GSfT7H87zq4",
+        "name": "Lofi Girl - Synth Ambient",
+        "image": "https://i.ytimg.com/vi/GSfT7H87zq4/mqdefault.jpg"
+    },
+    {
+        "type": "youtube",
+        "youtubeVideoId": "CwPCy1GLS38",
+        "name": "Lofi Girl - Sad",
+        "image": "https://i.ytimg.com/vi/CwPCy1GLS38/mqdefault.jpg"
     }
 ]
